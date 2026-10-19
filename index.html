@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>Vince BloxStore — Joki Blox Fruits</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e30613'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='white' font-family='Arial Black'>V</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   VINCE BLOXSTORE — style
+   Palet: hitam #050505 · merah #e30613 · putih #ffffff
+   ============================================================ */
+:root{
+  --black:#050505;
+  --panel:#0d0d0d;
+  --line:#242424;
+  --line-soft:#1a1a1a;
+  --red:#e30613;
+  --red-deep:#8f0410;
+  --white:#ffffff;
+  --grey:#8f8f8f;
+  --font-display:'Anton', 'Arial Black', sans-serif;
+  --font-body:'Space Grotesk', -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:'JetBrains Mono', 'Courier New', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--font-body);
+  min-height:100vh;
+  animation:fadeIn .6s ease;
+  overscroll-behavior-y:none;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+::selection{background:var(--red);color:#fff}
+
+/* Kolom aplikasi — mobile-first, nyaman juga di iPad/desktop */
+.app{max-width:640px;margin:0 auto;border-left:1px solid var(--line-soft);border-right:1px solid var(--line-soft);min-height:100vh}
+
+/* ---------- HEADER ---------- */
+header{padding:28px 20px 20px;border-bottom:1px solid var(--line)}
+.brand-top{font-family:var(--font-mono);font-size:11px;letter-spacing:.25em;color:var(--grey);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.brand-top .dot{color:var(--red)}
+h1.brand{
+  font-family:var(--font-display);
+  font-size:clamp(44px, 12.5vw, 84px);
+  line-height:.92;
+  text-transform:uppercase;
+  margin-top:10px;
+  letter-spacing:.01em;
+}
+h1.brand .stroke{
+  display:block;
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--white);
+}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.badge{
+  font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em;
+  border:1px solid var(--line);color:var(--white);padding:6px 10px;
+}
+.badge.red{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+.note-nego{margin-top:14px;font-size:12.5px;color:var(--grey);line-height:1.5}
+.note-nego b{color:var(--white)}
+
+/* ---------- MARQUEE ---------- */
+.marquee{background:var(--red);color:#fff;overflow:hidden;border-bottom:1px solid var(--line);white-space:nowrap}
+.marquee-inner{display:inline-flex;animation:scroll 22s linear infinite;padding:9px 0}
+.marquee-inner span{font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;padding:0 14px;font-weight:700}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- SEARCH + KATEGORI ---------- */
+.controls{position:sticky;top:0;z-index:50;background:var(--black);border-bottom:1px solid var(--line)}
+.search-wrap{padding:12px 16px 10px}
+#search{
+  width:100%;background:var(--panel);border:1px solid var(--line);color:var(--white);
+  font-family:var(--font-mono);font-size:14px;padding:13px 14px;outline:none;border-radius:0;
+}
+#search::placeholder{color:#555}
+#search:focus{border-color:var(--red)}
+.cats{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat-chip{
+  flex:0 0 auto;font-family:var(--font-mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;
+  background:transparent;color:var(--grey);border:1px solid var(--line);padding:9px 13px;cursor:pointer;
+  transition:all .2s ease;border-radius:0;
+}
+.cat-chip::before{content:"+ ";color:var(--red)}
+.cat-chip:hover{border-color:var(--red);color:var(--white)}
+.cat-chip.active{background:var(--red);border-color:var(--red);color:#fff}
+.cat-chip.active::before{content:"− ";color:#fff}
+
+/* ---------- DAFTAR MENU ---------- */
+.menu{padding-bottom:120px}
+.cat-block{padding-top:6px}
+.cat-title{
+  position:sticky;top:106px;z-index:40;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--red);
+  background:var(--black);padding:14px 20px 10px;border-bottom:1px solid var(--line);
+}
+.item{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 20px;border-bottom:1px solid var(--line-soft);
+  transition:background .2s ease;
+}
+.item:hover{background:#0a0a0a}
+.item.in-cart{background:#12060a;box-shadow:inset 3px 0 0 var(--red)}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:15px;font-weight:700;line-height:1.3}
+.item-name::before{content:"• ";color:var(--red)}
+.item-desc{font-size:12px;color:var(--grey);margin-top:3px;line-height:1.45}
+.item-price{font-family:var(--font-mono);font-size:13.5px;font-weight:700;color:var(--white);white-space:nowrap;margin-top:6px}
+.item-price small{color:var(--grey);font-weight:400}
+
+/* Tombol tambah / stepper — target sentuh besar */
+.add-btn{
+  width:46px;height:46px;flex:0 0 auto;
+  background:transparent;border:1px solid var(--line);color:var(--white);
+  font-family:var(--font-mono);font-size:20px;cursor:pointer;border-radius:0;
+  transition:all .18s ease;
+}
+.add-btn:hover{border-color:var(--red);color:var(--red)}
+.add-btn:active{transform:scale(.92);background:var(--red);color:#fff;border-color:var(--red)}
+.stepper{display:flex;align-items:center;gap:0;flex:0 0 auto}
+.step-btn{
+  width:44px;height:46px;background:var(--panel);border:1px solid var(--red);color:var(--white);
+  font-family:var(--font-mono);font-size:18px;cursor:pointer;transition:all .15s ease;
+}
+.step-btn:active{transform:scale(.9);background:var(--red)}
+.step-qty{
+  min-width:38px;text-align:center;font-family:var(--font-mono);font-weight:700;font-size:15px;
+  border-top:1px solid var(--red);border-bottom:1px solid var(--red);padding:12px 0;background:var(--red);color:#fff;
+}
+
+/* ---------- BAR KERANJANG (sticky bawah) ---------- */
+.cartbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:100;
+  display:flex;justify-content:center;
+  transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.9,.3,1);
+  pointer-events:none;
+}
+.cartbar.show{transform:translateY(0);pointer-events:auto}
+.cartbar-inner{
+  width:100%;max-width:640px;background:#0a0a0a;border-top:1px solid var(--line);
+  display:flex;align-items:stretch;gap:0;
+}
+.cart-info{flex:1;padding:13px 18px;display:flex;flex-direction:column;justify-content:center}
+.cart-count{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--grey)}
+.cart-total{font-family:var(--font-mono);font-size:19px;font-weight:700;margin-top:2px}
+.btn-bill{
+  background:var(--red);color:#fff;border:none;cursor:pointer;
+  font-family:var(--font-body);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;
+  padding:0 26px;min-height:64px;display:flex;align-items:center;gap:8px;
+  transition:background .2s ease;
+}
+.btn-bill:hover{background:var(--red-deep)}
+.btn-bill:active{transform:scale(.97)}
+
+/* ---------- MODAL BILL ---------- */
+.overlay{
+  position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+.overlay.open{opacity:1;pointer-events:auto}
+.bill-panel{
+  width:100%;max-width:560px;max-height:92vh;overflow-y:auto;
+  background:var(--panel);border-top:2px solid var(--red);
+  padding:26px 20px calc(24px + env(safe-area-inset-bottom));
+  transform:translateY(40px);transition:transform .35s cubic-bezier(.2,.9,.3,1);
+}
+.overlay.open .bill-panel{transform:translateY(0)}
+.bill-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.bill-head-title{font-family:var(--font-display);font-size:22px;text-transform:uppercase;letter-spacing:.02em}
+.bill-close{background:none;border:1px solid var(--line);color:var(--grey);width:40px;height:40px;font-size:16px;cursor:pointer;font-family:var(--font-mono)}
+.bill-close:hover{border-color:var(--red);color:var(--white)}
+
+.receipt{
+  background:#fff;color:#000;
+  padding:18px 14px;
+  border:1px dashed #999;
+  box-shadow:0 0 0 6px #fff, 0 0 0 7px #999;
+  margin:8px 2px 4px;
+}
+.receipt pre{
+  font-family:var(--font-mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;
+}
+.receipt .tiket-line{color:var(--red);font-weight:700}
+
+.bill-actions{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.btn{
+  min-height:56px;display:flex;align-items:center;justify-content:center;gap:10px;
+  font-family:var(--font-body);font-weight:700;font-size:14.5px;letter-spacing:.06em;text-transform:uppercase;
+  cursor:pointer;border-radius:0;transition:all .18s ease;text-decoration:none;
+}
+.btn:active{transform:scale(.98)}
+.btn-red{background:var(--red);color:#fff;border:1px solid var(--red)}
+.btn-red:hover{background:var(--red-deep)}
+.btn-outline{background:transparent;color:var(--white);border:1px solid var(--line)}
+.btn-outline:hover{border-color:var(--white)}
+.btn-ghost{background:none;border:none;color:var(--grey);font-size:12.5px;min-height:40px;letter-spacing:.14em}
+.btn-ghost:hover{color:var(--white)}
+
+/* ---------- TOAST ---------- */
+.toast{
+  position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);z-index:300;
+  background:var(--white);color:#000;font-family:var(--font-mono);font-size:12.5px;font-weight:700;
+  padding:11px 18px;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.9,.3,1);
+  white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- FOOTER ---------- */
+footer{border-top:1px dashed #333;padding:26px 20px 130px;color:var(--grey);font-size:12px;line-height:1.8}
+footer b{color:var(--white)}
+footer .fnote{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-top:14px;color:#555}
+
+.empty-state{padding:70px 30px;text-align:center;color:#555;font-family:var(--font-mono);font-size:13px;line-height:1.7}
+
+@media (min-width:641px){
+  .bill-panel{border:1px solid var(--line);border-top:2px solid var(--red);margin-bottom:40px}
+  .overlay{align-items:center}
+  .cat-title{top:105px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <div class="brand-top"><span>Joki Blox Fruits by Vince</span><span class="dot">●OPEN</span></div>
+    <h1 class="brand">VINCE<span class="stroke">BLOXSTORE</span></h1>
+    <div class="badges">
+      <span class="badge red">Aman</span>
+      <span class="badge">Fast</span>
+      <span class="badge">No Cheat</span>
+      <span class="badge">Bisa Parsial</span>
+      <span class="badge">Harga Jelas</span>
+    </div>
+    <p class="note-nego">Harga di atas <b>20k bisa nego</b> yaa (nego santai tapi masuk akal 😆) — pilih menu di bawah, total dihitung otomatis.</p>
+  </header>
+
+  <!-- ================= MARQUEE ================= -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-inner" id="marquee"></div>
+  </div>
+
+  <!-- ================= SEARCH + KATEGORI ================= -->
+  <div class="controls">
+    <div class="search-wrap">
+      <input id="search" type="search" placeholder="Cari menu… (mis: godhuman, cdk, raid)" autocomplete="off">
+    </div>
+    <div class="cats" id="cats"></div>
+  </div>
+
+  <!-- ================= MENU ================= -->
+  <main class="menu" id="menu"></main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <b>Catatan:</b><br>
+    · Harga bisa berubah tergantung server &amp; kesulitan<br>
+    · Bisa request boss lain — PM aja<br>
+    · Belly, fragment &amp; bounty berlaku kelipatan<br>
+    · Order diproses setelah konfirmasi via WhatsApp Vince
+    <div class="fnote">© Vince BloxStore — Joki Blox Fruits · Website pemesanan, bukan pembayaran</div>
+  </footer>
+
+</div>
+
+<!-- ================= BAR KERANJANG ================= -->
+<div class="cartbar" id="cartbar">
+  <div class="cartbar-inner">
+    <div class="cart-info">
+      <span class="cart-count" id="cartCount">0 item</span>
+      <span class="cart-total" id="cartTotal">Rp0</span>
+    </div>
+    <button class="btn-bill" id="btnBill">Buat Bill →</button>
+  </div>
+</div>
+
+<!-- ================= MODAL BILL ================= -->
+<div class="overlay" id="overlay">
+  <div class="bill-panel">
+    <div class="bill-head">
+      <div class="bill-head-title">Tagihan Kamu</div>
+      <button class="bill-close" id="billClose" aria-label="Tutup">✕</button>
+    </div>
+    <div class="receipt"><pre id="billText"></pre></div>
+    <div class="bill-actions">
+      <a class="btn btn-red" id="btnWA" href="#" target="_blank" rel="noopener">Kirim ke WA Vince ↗</a>
+      <button class="btn btn-outline" id="btnCopy">Salin Bill</button>
+      <button class="btn btn-ghost" id="btnNew">✕ &nbsp;Pesanan baru (reset)</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ★★★ KONFIGURASI — EDIT BAGIAN INI ★★★
+   ------------------------------------------------------------
+   WA_NUMBER : nomor WhatsApp Vince, format internasional TANPA
+               tanda + dan tanpa spasi. Contoh: 0812-3456-7890
+               menjadi "6287720390556".
+   ============================================================ */
+const WA_NUMBER = "6287720390556"; // <<<<<< GANTI NOMOR WA VINCE DI SINI
+const STORE_NAME = "VINCE BLOXSTORE";
+
+/* ============================================================
+   ★★★ DAFTAR MENU — EDIT / TAMBAH MENU DI SINI ★★★
+   ------------------------------------------------------------
+   Format tiap kategori:
+   { cat: "NAMA KATEGORI", items: [ ... ] }
+
+   Format tiap menu:
+   { name: "Nama Joki", desc: "deskripsi singkat", price: 85000 }
+   price ditulis angka rupiah penuh (85k = 85000).
+   ============================================================ */
+const MENU = [
+  { cat: "Level", items: [
+    { name:"Level 0–2800 (Full)", desc:"Joki level dari 0 sampai max 2800", price:85000 },
+    { name:"100 Level Sea 1", desc:"Per 100 level di Sea 1", price:4000 },
+    { name:"100 Level Sea 2", desc:"Per 100 level di Sea 2", price:5000 },
+    { name:"100 Level Sea 3", desc:"Per 100 level di Sea 3", price:5000 },
+  ]},
+  { cat: "Mastery", items: [
+    { name:"100 Mastery Gun (Sea 1)", desc:"Per 100 mastery gun", price:30000 },
+    { name:"100 Mastery Gun (Sea 2)", desc:"Per 100 mastery gun", price:25000 },
+    { name:"100 Mastery Gun (Sea 3)", desc:"Per 100 mastery gun", price:20000 },
+    { name:"100 Mastery Fighting Style (S1)", desc:"Per 100 mastery fighting style", price:20000 },
+    { name:"100 Mastery Fighting Style (S2)", desc:"Per 100 mastery fighting style", price:15000 },
+    { name:"100 Mastery Fighting Style (S3)", desc:"Per 100 mastery fighting style", price:10000 },
+    { name:"100 Mastery Sword (Sea 1)", desc:"Per 100 mastery sword", price:20000 },
+    { name:"100 Mastery Sword (Sea 2)", desc:"Per 100 mastery sword", price:15000 },
+    { name:"100 Mastery Sword (Sea 3)", desc:"Per 100 mastery sword", price:10000 },
+    { name:"100 Mastery Fruit M1 (S1)", desc:"Fruit dengan M1", price:18000 },
+    { name:"100 Mastery Fruit M1 (S2)", desc:"Fruit dengan M1", price:12000 },
+    { name:"100 Mastery Fruit M1 (S3)", desc:"Fruit dengan M1", price:8000 },
+    { name:"100 Mastery Fruit No M1 (S1)", desc:"Fruit tanpa M1", price:25000 },
+    { name:"100 Mastery Fruit No M1 (S2)", desc:"Fruit tanpa M1", price:20000 },
+    { name:"100 Mastery Fruit No M1 (S3)", desc:"Fruit tanpa M1", price:15000 },
+  ]},
+  { cat: "Fighting Style", items: [
+    { name:"Godhuman", desc:"Unlock fighting style Godhuman", price:28000 },
+    { name:"Superhuman", desc:"Unlock fighting style Superhuman", price:14000 },
+    { name:"Dragon Talon", desc:"Unlock fighting style Dragon Talon", price:10000 },
+    { name:"Electric Claw", desc:"Unlock fighting style Electric Claw", price:10000 },
+    { name:"Sharkman Karate", desc:"Unlock fighting style Sharkman Karate", price:10000 },
+    { name:"Death Step", desc:"Unlock fighting style Death Step", price:6000 },
+    { name:"Sanguine Art", desc:"Bisa parsial — tanya progres dulu", price:110000 },
+  ]},
+  { cat: "Instinct", items: [
+    { name:"Unlock Instinct", desc:"Buka Instinct (Observation Haki)", price:5000 },
+    { name:"Instinct V2", desc:"Upgrade ke Instinct V2", price:15000 },
+    { name:"Full Upgrade Instinct", desc:"Range + dodge max", price:20000 },
+  ]},
+  { cat: "Belly & Fragment", items: [
+    { name:"1M Belly", desc:"Berlaku kelipatan", price:5000 },
+    { name:"1K Fragment", desc:"Mulai 1.5k — bisa 2k tergantung server, konfirmasi via WA", price:1500 },
+  ]},
+  { cat: "Bounty", items: [
+    { name:"Bounty 100K", desc:"Berlaku kelipatan", price:8000 },
+    { name:"Bounty 500K", desc:"Berlaku kelipatan", price:35000 },
+    { name:"Bounty 1M", desc:"Berlaku kelipatan", price:65000 },
+  ]},
+  { cat: "Material", items: [
+    { name:"Dark Fragment", desc:"Material Dark Fragment", price:17000 },
+    { name:"Vampire Fang (10x)", desc:"10 Vampire Fang", price:12000 },
+    { name:"Demonic Wisp (10x)", desc:"10 Demonic Wisp", price:12000 },
+    { name:"Ectoplasm (250x)", desc:"250 Ectoplasm", price:12000 },
+    { name:"Bones (500x)", desc:"500 Bones", price:12000 },
+    { name:"Mirror Fractal", desc:"Material Mirror Fractal", price:23000 },
+    { name:"Berry", desc:"Material Berry", price:18000 },
+    { name:"Dragon Scale (10x)", desc:"10 Dragon Scale", price:6000 },
+    { name:"Conjured Cocoa (10x)", desc:"10 Conjured Cocoa", price:6000 },
+    { name:"Fool's Gold (10x)", desc:"10 Fool's Gold", price:6000 },
+    { name:"Mutant Tooth (5x)", desc:"5 Mutant Tooth", price:6000 },
+  ]},
+  { cat: "Belt (Dojo)", items: [
+    { name:"Belt White / Yellow / Orange", desc:"Per belt", price:4000 },
+    { name:"Belt Green / Blue", desc:"Per belt", price:5000 },
+    { name:"Belt Purple", desc:"Per belt", price:7000 },
+    { name:"Belt Red", desc:"Per belt", price:9000 },
+    { name:"Black Belt", desc:"Unlock Black Belt", price:18000 },
+    { name:"Full Belt (White–Black)", desc:"Paket semua belt", price:50000 },
+  ]},
+  { cat: "Race", items: [
+    { name:"Race Human / Shark / Mink / Angel", desc:"Per race (pilih salah satu)", price:18000 },
+    { name:"Race Ghoul", desc:"Unlock race Ghoul", price:28000 },
+    { name:"Race Draco", desc:"Unlock race Draco", price:18000 },
+    { name:"Race Cyborg", desc:"Unlock race Cyborg", price:20000 },
+  ]},
+  { cat: "Upgrade Race", items: [
+    { name:"Race V1 → V2", desc:"Upgrade race V1 ke V2", price:6000 },
+    { name:"Race V2 → V3", desc:"Upgrade race V2 ke V3", price:12000 },
+    { name:"Draco V2", desc:"Upgrade Draco ke V2", price:12000 },
+    { name:"Draco V3", desc:"Upgrade Draco ke V3", price:15000 },
+    { name:"Ghoul V3", desc:"Upgrade Ghoul ke V3", price:20000 },
+  ]},
+  { cat: "Race V4", items: [
+    { name:"Blue Gear", desc:"Unlock blue gear V4", price:30000 },
+    { name:"V4 1 Gear Biasa", desc:"1 gear race biasa", price:10000 },
+    { name:"V4 Full Gear Biasa", desc:"Full gear race biasa", price:60000 },
+    { name:"V4 1 Gear Draco", desc:"1 gear Draco", price:12000 },
+    { name:"V4 Full Gear Draco", desc:"Full gear Draco", price:65000 },
+  ]},
+  { cat: "Sword / Gun", items: [
+    { name:"Skull Guitar (Paket Komplit)", desc:"Paket komplit Skull Guitar", price:55000 },
+    { name:"CDK (Full)", desc:"Cursed Dual Katana full", price:35000 },
+    { name:"CDK 1 Quest", desc:"Per 1 quest CDK", price:7000 },
+    { name:"TTK (Full)", desc:"True Triple Katana full", price:45000 },
+    { name:"TTK 1 Sword", desc:"Per 1 sword TTK", price:15000 },
+    { name:"Hallow Scythe", desc:"Unlock Hallow Scythe", price:16000 },
+    { name:"Yama", desc:"Unlock Yama", price:16000 },
+    { name:"Tushita", desc:"Unlock Tushita", price:20000 },
+    { name:"Shark Anchor", desc:"Shark Anchor biasa", price:15000 },
+    { name:"Shark Anchor (Paket)", desc:"Paket Shark Anchor 30k", price:30000 },
+    { name:"Dragon Storm", desc:"Unlock Dragon Storm", price:23000 },
+    { name:"Dragon Heart", desc:"Unlock Dragon Heart", price:16000 },
+  ]},
+  { cat: "Awakening", items: [
+    { name:"Raid Normal", desc:"Per 1 raid normal", price:3000 },
+    { name:"Advance Raid", desc:"Per 1 advance raid", price:6000 },
+    { name:"Full Awakening Biasa", desc:"Full awaken fruit biasa", price:23000 },
+    { name:"Full Awakening Advance", desc:"Full awaken fruit advance", price:30000 },
+  ]},
+  { cat: "Bundle (Hemat)", items: [
+    { name:"Bundle Full Level + Mastery", desc:"Paket hemat level + mastery", price:120000 },
+    { name:"Bundle CDK Full", desc:"Paket hemat CDK full", price:50000 },
+    { name:"Bundle Skull Guitar Full", desc:"Paket hemat Skull Guitar", price:70000 },
+    { name:"Bundle V4 Full Gear", desc:"Paket hemat V4 full gear", price:65000 },
+    { name:"Bundle Instinct V2 + Full Upgrade", desc:"Paket hemat instinct", price:30000 },
+    { name:"Bundle Full Draco V4", desc:"Paket hemat Draco sampai V4", price:140000 },
+  ]},
+  { cat: "Kitsune", items: [
+    { name:"Kitsune Ribbon", desc:"Item Kitsune Island", price:20000 },
+    { name:"Kitsune Mask", desc:"Item Kitsune Island", price:20000 },
+    { name:"Kitsune Fox Lamp", desc:"Item Kitsune Island", price:18000 },
+    { name:"Kitsune Aura Color", desc:"Aura color Kitsune", price:10000 },
+    { name:"Kitsune Title", desc:"Title Kitsune", price:8000 },
+  ]},
+  { cat: "Boss Service", items: [
+    { name:"Rip Indra", desc:"Joki boss Rip Indra", price:20000 },
+    { name:"Darkbeard", desc:"Joki boss Darkbeard", price:15000 },
+    { name:"Cursed Captain", desc:"Joki boss Cursed Captain", price:8000 },
+    { name:"Soul Reaper", desc:"Joki boss Soul Reaper", price:12000 },
+    { name:"Dough King", desc:"Joki boss Dough King", price:25000 },
+    { name:"Tyrant of the Skies", desc:"Joki boss Tyrant", price:12000 },
+    { name:"Thunder God", desc:"Joki boss Thunder God", price:12000 },
+    { name:"Cake Prince", desc:"Joki boss Cake Prince", price:10000 },
+    { name:"Captain Elephant", desc:"Joki boss Captain Elephant", price:8000 },
+    { name:"Stone Boss", desc:"Joki boss Stone", price:5000 },
+    { name:"Island Empress", desc:"Joki boss Island Empress", price:6000 },
+    { name:"Kilo Admiral", desc:"Joki boss Kilo Admiral", price:5000 },
+    { name:"Vice Admiral", desc:"Joki boss Vice Admiral", price:4000 },
+    { name:"Tide Keeper", desc:"Joki boss Tide Keeper", price:6000 },
+  ]},
+  { cat: "Levi Service", items: [
+    { name:"Levi Hydra", desc:"Berlaku kelipatan", price:75000 },
+    { name:"Levi Tiki", desc:"Berlaku kelipatan", price:75000 },
+    { name:"Levi Shield", desc:"Berlaku kelipatan", price:100000 },
+    { name:"Levi Crown", desc:"Berlaku kelipatan", price:55000 },
+    { name:"Beast Hunter", desc:"Joki Beast Hunter", price:40000 },
+    { name:"Levi Scale (15x)", desc:"15 Levi Scale", price:35000 },
+  ]},
+  { cat: "Sea Service / Event", items: [
+    { name:"Sea Event Random", desc:"Per 30 menit", price:15000 },
+    { name:"Sea Beast Hunt", desc:"Per hunt", price:15000 },
+    { name:"Ship Raid", desc:"Per ship raid", price:3000 },
+    { name:"Terror Shark", desc:"Joki Terror Shark", price:20000 },
+    { name:"Piranha & Shark Event", desc:"Per event", price:7000 },
+    { name:"Ghost Ship", desc:"Per ghost ship", price:5000 },
+    { name:"Prehistoric", desc:"Event Prehistoric", price:14000 },
+  ]},
+];
+
+/* ============================================================
+   LOGIKA APLIKASI — tidak perlu diedit untuk ganti menu/harga
+   ============================================================ */
+
+// Beri ID unik tiap item: "indexKategori-indexItem"
+const ITEMS = [];
+MENU.forEach((c, ci) => c.items.forEach((it, ii) => ITEMS.push({ ...it, cat: c.cat, id: ci + "-" + ii })));
+
+const cart = new Map(); // id -> qty
+let activeCat = "Semua";
+let keyword = "";
+let currentTicket = "";
+
+const rupiah = n => "Rp" + n.toLocaleString("id-ID");
+const $ = s => document.querySelector(s);
+
+/* ---------- Toast ---------- */
+let toastTimer;
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+/* ---------- Marquee ---------- */
+(function(){
+  const txt = "JOKI BLOX FRUITS BY VINCE ✦ AMAN ✦ FAST ✦ NO CHEAT ✦ BISA PARSIAL ✦ HARGA JELAS ✦ ";
+  $("#marquee").innerHTML = ("<span>" + txt + "</span>").repeat(4);
+})();
+
+/* ---------- Render chip kategori ---------- */
+function renderCats(){
+  const cats = ["Semua", ...MENU.map(c => c.cat)];
+  $("#cats").innerHTML = cats.map(c =>
+    `<button class="cat-chip ${c === activeCat ? "active" : ""}" data-cat="${c}">${c}</button>`
+  ).join("");
+}
+
+/* ---------- Render menu ---------- */
+function renderMenu(){
+  const kw = keyword.trim().toLowerCase();
+  let html = "";
+  MENU.forEach((c, ci) => {
+    if (activeCat !== "Semua" && c.cat !== activeCat) return;
+    const visible = c.items.filter(it =>
+      !kw || it.name.toLowerCase().includes(kw) || (it.desc || "").toLowerCase().includes(kw)
+    );
+    if (!visible.length) return;
+    html += `<section class="cat-block"><div class="cat-title">${c.cat}</div>`;
+    visible.forEach(it => {
+      const id = ci + "-" + MENU[ci].items.indexOf(it);
+      const qty = cart.get(id) || 0;
+      html += `
+      <div class="item ${qty ? "in-cart" : ""}">
+        <div class="item-info">
+          <div class="item-name">${it.name}</div>
+          ${it.desc ? `<div class="item-desc">${it.desc}</div>` : ""}
+          <div class="item-price">${rupiah(it.price)}</div>
+        </div>
+        ${qty ? `
+          <div class="stepper">
+            <button class="step-btn" data-act="dec" data-id="${id}" aria-label="Kurangi">−</button>
+            <span class="step-qty">${qty}</span>
+            <button class="step-btn" data-act="inc" data-id="${id}" aria-label="Tambah">+</button>
+          </div>`
+        : `<button class="add-btn" data-act="inc" data-id="${id}" aria-label="Tambah ${it.name}">+</button>`}
+      </div>`;
+    });
+    html += `</section>`;
+  });
+  $("#menu").innerHTML = html || `<div class="empty-state">Tidak ada menu yang cocok.<br>Coba kata kunci lain.</div>`;
+}
+
+/* ---------- Keranjang ---------- */
+function cartEntries(){
+  return [...cart.entries()].map(([id, qty]) => ({ item: ITEMS.find(i => i.id === id), qty }));
+}
+function cartTotal(){
+  return cartEntries().reduce((s, e) => s + e.item.price * e.qty, 0);
+}
+function cartCount(){
+  return [...cart.values()].reduce((s, q) => s + q, 0);
+}
+function updateCartBar(){
+  const n = cartCount();
+  $("#cartCount").textContent = n + " item";
+  $("#cartTotal").textContent = rupiah(cartTotal());
+  $("#cartbar").classList.toggle("show", n > 0);
+}
+function changeQty(id, delta){
+  const q = (cart.get(id) || 0) + delta;
+  if (q <= 0) cart.delete(id); else cart.set(id, q);
+  renderMenu();
+  updateCartBar();
+  if (delta > 0 && q === 1){
+    const it = ITEMS.find(i => i.id === id);
+    toast("✓ " + it.name + " ditambahkan");
+  }
+}
+
+/* ---------- Tiket acak VBS-XXXX ---------- */
+function makeTicket(){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // tanpa karakter mirip (I,O,0,1)
+  let s = "";
+  for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return "VBS-" + s;
+}
+
+/* ---------- Susun teks bill ---------- */
+function buildBillText(){
+  const lines = [];
+  lines.push("╔════════════════════╗");
+  lines.push("🔴 " + STORE_NAME + " 🔴");
+  lines.push("╚════════════════════╝");
+  lines.push("");
+  lines.push("🎟️ Tiket: " + currentTicket);
+  lines.push("");
+  lines.push("╭── 📋 DETAIL PESANAN ──");
+  cartEntries().forEach((e, i) => {
+    const qty = e.qty > 1 ? " x" + e.qty : "";
+    lines.push("│ " + (i + 1) + ". " + e.item.name + qty + " | " + rupiah(e.item.price * e.qty));
+  });
+  lines.push("╰────────────────────");
+  lines.push("");
+  lines.push("╔════════════════════╗");
+  lines.push("║ 💰 TOTAL: " + rupiah(cartTotal()));
+  lines.push("╚════════════════════╝");
+  lines.push("");
+  lines.push("📲 Kirim bill ke WA Vince!");
+  return lines.join("\n");
+}
+
+/* ---------- Modal ---------- */
+function openBill(){
+  if (!cartCount()) return;
+  currentTicket = makeTicket(); // tiket baru & acak tiap pesanan
+  const text = buildBillText();
+  $("#billText").textContent = text;
+  const waMsg = "Halo Vince! Saya mau order joki Blox Fruits:\n\n" + text;
+  $("#btnWA").href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(waMsg);
+  $("#overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeBill(){
+  $("#overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+/* ---------- Salin bill ---------- */
+async function copyBill(){
+  const text = $("#billText").textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("✓ Bill tersalin");
+  } catch (e) {
+    // Fallback untuk browser lama
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); toast("✓ Bill tersalin"); }
+    catch (err) { toast("Gagal menyalin — salin manual ya"); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ---------- Event ---------- */
+document.addEventListener("click", e => {
+  const btn = e.target.closest("[data-act]");
+  if (btn) changeQty(btn.dataset.id, btn.dataset.act === "inc" ? 1 : -1);
+
+  const chip = e.target.closest(".cat-chip");
+  if (chip){
+    activeCat = chip.dataset.cat;
+    renderCats();
+    renderMenu();
+  }
+});
+$("#search").addEventListener("input", e => { keyword = e.target.value; renderMenu(); });
+$("#btnBill").addEventListener("click", openBill);
+$("#billClose").addEventListener("click", closeBill);
+$("#overlay").addEventListener("click", e => { if (e.target.id === "overlay") closeBill(); });
+$("#btnCopy").addEventListener("click", copyBill);
+$("#btnNew").addEventListener("click", () => {
+  cart.clear();
+  renderMenu();
+  updateCartBar();
+  closeBill();
+  toast("Pesanan direset — silakan pilih lagi");
+});
+
+/* ---------- Init ---------- */
+renderCats();
+renderMenu();
+updateCartBar();
+</script>
+</body>
+</html>
+
