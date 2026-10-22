@@ -224,6 +224,19 @@ footer .fnote{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em
 
 .empty-state{padding:70px 30px;text-align:center;color:#555;font-family:var(--font-mono);font-size:13px;line-height:1.7}
 
+/* ---------- REVIEW PESANAN (langkah sebelum bill) ---------- */
+.review-hint{font-size:12px;color:var(--grey);margin:-8px 0 6px;line-height:1.5}
+.rv-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line-soft)}
+.rv-info{flex:1;min-width:0}
+.rv-name{font-size:14px;font-weight:700;line-height:1.3}
+.rv-price{font-family:var(--font-mono);font-size:11.5px;color:var(--grey);margin-top:3px}
+.rv-sub{font-family:var(--font-mono);font-size:13px;font-weight:700;white-space:nowrap}
+.review-total{display:flex;justify-content:space-between;align-items:center;padding:18px 0 2px;font-family:var(--font-mono)}
+.review-total .lbl{font-size:10.5px;letter-spacing:.2em;color:var(--grey)}
+.review-total .val{font-size:20px;font-weight:700;color:var(--red)}
+.review-empty{padding:34px 10px;text-align:center;color:var(--grey);font-size:13px;line-height:1.7}
+.btn-bill.off{background:#1c1c1c;color:#666;cursor:not-allowed}
+
 @media (min-width:641px){
   .bill-panel{border:1px solid var(--line);border-top:2px solid var(--red);margin-bottom:40px}
   .overlay{align-items:center}
@@ -291,19 +304,42 @@ footer .fnote{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em
   </div>
 </div>
 
-<!-- ================= MODAL BILL ================= -->
+<!-- ================= MODAL (Review → Bill) ================= -->
 <div class="overlay" id="overlay">
   <div class="bill-panel">
-    <div class="bill-head">
-      <div class="bill-head-title">Tagihan Kamu</div>
-      <button class="bill-close" id="billClose" aria-label="Tutup">✕</button>
+
+    <!-- LANGKAH 1: REVIEW PESANAN -->
+    <div id="reviewView">
+      <div class="bill-head">
+        <div class="bill-head-title">Pesanan Kamu</div>
+        <button class="bill-close" id="reviewClose" aria-label="Tutup">✕</button>
+      </div>
+      <p class="review-hint">Cek dulu menu yang dipilih — masih bisa tambah/kurangi di sini. Kalau sudah pas, lanjut buat bill.</p>
+      <div id="reviewList"></div>
+      <div class="review-total">
+        <span class="lbl">TOTAL SEMENTARA</span>
+        <span class="val" id="reviewTotal">Rp0</span>
+      </div>
+      <div class="bill-actions">
+        <button class="btn btn-red" id="btnConfirm">Buat Bill 🎟️</button>
+      </div>
     </div>
-    <div class="receipt"><pre id="billText"></pre></div>
-    <div class="bill-actions">
-      <a class="btn btn-red" id="btnWA" href="#" target="_blank" rel="noopener">Kirim ke WA Vince ↗</a>
-      <button class="btn btn-outline" id="btnCopy">Salin Bill</button>
-      <button class="btn btn-ghost" id="btnNew">✕ &nbsp;Pesanan baru (reset)</button>
+
+    <!-- LANGKAH 2: BILL -->
+    <div id="billView" style="display:none">
+      <div class="bill-head">
+        <div class="bill-head-title">Tagihan Kamu</div>
+        <button class="bill-close" id="billClose" aria-label="Tutup">✕</button>
+      </div>
+      <div class="receipt"><pre id="billText"></pre></div>
+      <div class="bill-actions">
+        <a class="btn btn-red" id="btnWA" href="#" target="_blank" rel="noopener">Kirim ke WA Vince ↗</a>
+        <button class="btn btn-outline" id="btnCopy">Salin Bill</button>
+        <button class="btn btn-ghost" id="btnBack">← &nbsp;Ubah pesanan</button>
+        <button class="btn btn-ghost" id="btnNew">✕ &nbsp;Pesanan baru (reset)</button>
+      </div>
     </div>
+
   </div>
 </div>
 
@@ -575,15 +611,20 @@ function cartCount(){
 }
 function updateCartBar(){
   const n = cartCount();
-  $("#cartCount").textContent = n + " item";
+  $("#cartCount").textContent = n > 0 ? n + " item" : "belum ada menu dipilih";
   $("#cartTotal").textContent = rupiah(cartTotal());
-  $("#cartbar").classList.toggle("show", n > 0);
+  $("#btnBill").classList.toggle("off", n === 0);
+  $("#cartbar").classList.add("show"); // bar selalu tampil sbg pengingat
 }
 function changeQty(id, delta){
   const q = (cart.get(id) || 0) + delta;
   if (q <= 0) cart.delete(id); else cart.set(id, q);
   renderMenu();
   updateCartBar();
+  // kalau panel review sedang terbuka, ikut diperbarui
+  if ($("#overlay").classList.contains("open") && $("#reviewView").style.display !== "none"){
+    renderReview();
+  }
   if (delta > 0 && q === 1){
     const it = ITEMS.find(i => i.id === id);
     toast("✓ " + it.name + " ditambahkan");
@@ -622,16 +663,57 @@ function buildBillText(){
   return lines.join("\n");
 }
 
-/* ---------- Modal ---------- */
+/* ---------- Modal: LANGKAH 1 = review, LANGKAH 2 = bill ---------- */
 function openBill(){
+  if (!cartCount()){
+    toast("Pilih menu dulu ya 👆");
+    return;
+  }
+  $("#reviewView").style.display = "";
+  $("#billView").style.display = "none";
+  renderReview();
+  $("#overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function renderReview(){
+  const entries = cartEntries();
+  const btn = $("#btnConfirm");
+  if (!entries.length){
+    $("#reviewList").innerHTML = `<div class="review-empty">Keranjang kosong.<br>Tutup panel ini lalu pilih menu dulu ya.</div>`;
+    btn.style.display = "none";
+  } else {
+    btn.style.display = "";
+    $("#reviewList").innerHTML = entries.map(e => `
+      <div class="rv-row">
+        <div class="rv-info">
+          <div class="rv-name">${e.item.name}</div>
+          <div class="rv-price">${rupiah(e.item.price)} / item</div>
+        </div>
+        <div class="stepper">
+          <button class="step-btn" data-act="dec" data-id="${e.item.id}" aria-label="Kurangi">−</button>
+          <span class="step-qty">${e.qty}</span>
+          <button class="step-btn" data-act="inc" data-id="${e.item.id}" aria-label="Tambah">+</button>
+        </div>
+        <div class="rv-sub">${rupiah(e.item.price * e.qty)}</div>
+      </div>`).join("");
+  }
+  $("#reviewTotal").textContent = rupiah(cartTotal());
+}
+function showBill(){
   if (!cartCount()) return;
   currentTicket = makeTicket(); // tiket baru & acak tiap pesanan
   const text = buildBillText();
   $("#billText").textContent = text;
   const waMsg = "Halo Vince! Saya mau order joki Blox Fruits:\n\n" + text;
   $("#btnWA").href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(waMsg);
-  $("#overlay").classList.add("open");
-  document.body.style.overflow = "hidden";
+  $("#reviewView").style.display = "none";
+  $("#billView").style.display = "";
+  document.querySelector(".bill-panel").scrollTop = 0;
+}
+function backToReview(){
+  $("#billView").style.display = "none";
+  $("#reviewView").style.display = "";
+  renderReview();
 }
 function closeBill(){
   $("#overlay").classList.remove("open");
@@ -671,6 +753,9 @@ document.addEventListener("click", e => {
 });
 $("#search").addEventListener("input", e => { keyword = e.target.value; renderMenu(); });
 $("#btnBill").addEventListener("click", openBill);
+$("#reviewClose").addEventListener("click", closeBill);
+$("#btnConfirm").addEventListener("click", showBill);
+$("#btnBack").addEventListener("click", backToReview);
 $("#billClose").addEventListener("click", closeBill);
 $("#overlay").addEventListener("click", e => { if (e.target.id === "overlay") closeBill(); });
 $("#btnCopy").addEventListener("click", copyBill);
